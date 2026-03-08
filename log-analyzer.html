@@ -594,45 +594,43 @@ Be concise and technical. Format with clear sections.
 LOGS:
 ${logs.slice(0, 3000)}`;
 
+  // Typewriter effect for non-streamed response
+  function typeWriter(text, i = 0) {
+    if (i < text.length) {
+      output.innerHTML = formatAnalysis(text.slice(0, i + 1)) + '<span class="stream-cursor"></span>';
+      output.scrollTop = output.scrollHeight;
+      setTimeout(() => typeWriter(text, i + 4), 8);
+    } else {
+      output.innerHTML = formatAnalysis(text);
+      badge.textContent = 'COMPLETE';
+      btn.disabled = false;
+    }
+  }
+
   try {
+    // Use stream:false to avoid CORS preflight triggered by streaming
     const response = await fetch('http://localhost:11434/api/generate', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ model, prompt, stream: true })
+      headers: { 'Content-Type': 'text/plain' }, // text/plain avoids CORS preflight
+      body: JSON.stringify({ model, prompt, stream: false })
     });
 
     if (!response.ok) throw new Error(`Ollama returned ${response.status}`);
 
+    const data = await response.json();
+    const fullText = data.response || '';
     output.innerHTML = '';
-    const reader = response.body.getReader();
-    const decoder = new TextDecoder();
-    let fullText = '';
-
-    while (true) {
-      const { done, value } = await reader.read();
-      if (done) break;
-      const chunk = decoder.decode(value);
-      const lines = chunk.split('\n').filter(Boolean);
-      for (const line of lines) {
-        try {
-          const json = JSON.parse(line);
-          if (json.response) {
-            fullText += json.response;
-            output.innerHTML = formatAnalysis(fullText) + '<span class="stream-cursor"></span>';
-            output.scrollTop = output.scrollHeight;
-          }
-        } catch {}
-      }
-    }
-
-    output.innerHTML = formatAnalysis(fullText);
-    badge.textContent = 'COMPLETE';
+    typeWriter(fullText);
+    return; // typeWriter handles btn.disabled and badge
 
   } catch (err) {
     let msg = err.message;
     let hint = '';
-    if (msg.includes('Failed to fetch') || msg.includes('NetworkError')) {
-      hint = `<br><br><strong>Is Ollama running?</strong><br>Open a terminal and run:<br><br><code style="color:var(--accent)">ollama serve</code><br><br>Then make sure you have the model:<br><code style="color:var(--accent)">ollama pull ${model}</code>`;
+    if (msg.includes('Failed to fetch') || msg.includes('NetworkError') || msg.includes('CORS')) {
+      hint = `<br><br><strong>Fix:</strong> Stop Ollama, then run these two commands:<br><br>
+<code style="color:var(--accent)">set OLLAMA_ORIGINS=*</code><br>
+<code style="color:var(--accent)">ollama serve</code><br><br>
+Both in the same Command Prompt window.`;
     }
     output.innerHTML = `<div class="error-msg">⚠ Could not connect to Ollama<br><br>${msg}${hint}</div>`;
     badge.textContent = 'ERROR';
