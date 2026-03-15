@@ -3,189 +3,298 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Aswin | Ethical Hacker / Freelancer</title>
-
-  <!-- Google Font -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-
-  <!-- CSS -->
+  <title>Aswin T A | Ethical Hacker</title>
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-  <!-- NAVBAR -->
-  <header class="navbar">
-    <div class="nav-container">
-      <div class="logo">Aswin T A</div>
+  <!-- Scanline overlay -->
+  <div class="scanlines" aria-hidden="true"></div>
 
-      <div class="menu-toggle" id="menu-toggle">☰</div>
+  <!-- NAVBAR -->
+  <header class="navbar" id="navbar">
+    <div class="nav-container">
+      <div class="logo">
+        <span class="logo-bracket">[</span>aswin@sec<span class="logo-cursor">_</span><span class="logo-bracket">]</span>
+      </div>
+
+      <div class="menu-toggle" id="menu-toggle" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </div>
 
       <nav id="nav-menu">
-        <a href="#home">Home</a>
-        <a href="#about">About</a>
-        <a href="#skills">Skills</a>
-        <a href="projects.html">Projects</a>
-        <a href="#learning">Learning</a>
-        <a href="Aswin_Resume.pdf" download>Resume</a>
-        <a href="#contact">Contact</a>
+        <a href="#home" data-label="home">Home</a>
+        <a href="#about" data-label="about">About</a>
+        <a href="#skills" data-label="skills">Skills</a>
+        <a href="#projects" data-label="projects">Projects</a>
+        <a href="#learning" data-label="learning">Learning</a>
+        <a href="Aswin_Resume.pdf" download class="nav-resume">Resume ↓</a>
+        <a href="#contact" data-label="contact">Contact</a>
       </nav>
     </div>
   </header>
 
   <!-- HERO -->
   <section class="hero" id="home">
+    <div class="hero-bg-grid" aria-hidden="true"></div>
     <div class="hero-wrapper">
-      
       <div class="hero-content">
-        <h1>Hi, I'm <span>Aswin T A</span></h1>
-        <h3>Ethical Hacker not certified yet. I've learned everything from Youtube, TryHackme, LetsDefend. Currently looking for entry level jobs!</h3>
-        <p>
-          
+        <p class="hero-label"><span class="dot"></span> Open to work</p>
+        <h1>Hi, I'm <span class="accent">Aswin T A</span></h1>
+        <div class="hero-typewriter">
+          <span id="typewriter"></span><span class="cursor">|</span>
+        </div>
+        <p class="hero-desc">
+          Self-taught ethical hacker with hands-on experience from TryHackMe, LetsDefend, and real-world projects.
+          Passionate about web application pentesting and threat detection.
         </p>
-
         <div class="cta-buttons">
-          <a href="Aswin_Resume.pdf" class="btn btn-primary" download>
-            Download Resume
-          </a>
+          <a href="Aswin_Resume.pdf" class="btn btn-primary" download>Download Resume</a>
           <a href="#projects" class="btn btn-outline">View Projects</a>
-          <a href="#contact" class="btn btn-outline">Contact</a>
+          <a href="#contact" class="btn btn-ghost">Contact</a>
+        </div>
+        <div class="hero-stats">
+          <div class="stat"><span class="stat-num">1+</span><span class="stat-label">Projects</span></div>
+          <div class="stat-divider"></div>
+          <div class="stat"><span class="stat-num">Google</span><span class="stat-label">Certified</span></div>
+          <div class="stat-divider"></div>
+          <div class="stat"><span class="stat-num">Active</span><span class="stat-label">THM learner</span></div>
         </div>
       </div>
 
       <div class="hero-image">
-        <img src="hacker.png" alt="Cybersecurity illustration">
+        <div class="hero-img-wrapper">
+          <div class="hex-ring"></div>
+          <img src="hacker.png" alt="Cybersecurity illustration">
+        </div>
       </div>
-
     </div>
   </section>
 
   <!-- ABOUT -->
-  <section class="card-section reveal" id="about">
-    <h2>About Me</h2>
-    <p>
-   
-    </p>
+  <section class="section reveal" id="about">
+    <div class="section-inner">
+      <div class="section-header">
+        <span class="section-tag">// 01</span>
+        <h2>About Me</h2>
+      </div>
+      <div class="about-grid">
+        <div class="about-text">
+          <p>
+            I'm a self-taught ethical hacker from Kerala, India. I've built my skills through platforms like TryHackMe, LetsDefend, and YouTube — diving deep into web application pentesting, threat detection, and log analysis.
+          </p>
+          <p style="margin-top: 16px;">
+            I'm currently pursuing CompTIA Security+ and actively looking for entry-level roles in cybersecurity. I believe in learning by doing — every project I build is a hands-on experiment.
+          </p>
+        </div>
+        <div class="about-terminal">
+          <div class="terminal-header">
+            <span class="t-dot red"></span>
+            <span class="t-dot yellow"></span>
+            <span class="t-dot green"></span>
+            <span class="t-title">whoami.sh</span>
+          </div>
+          <div class="terminal-body">
+            <p><span class="t-prompt">$</span> <span class="t-cmd">whoami</span></p>
+            <p class="t-out">aswin_ta</p>
+            <p><span class="t-prompt">$</span> <span class="t-cmd">cat role.txt</span></p>
+            <p class="t-out">Ethical Hacker / Security Enthusiast</p>
+            <p><span class="t-prompt">$</span> <span class="t-cmd">cat location.txt</span></p>
+            <p class="t-out">Kerala, India 🇮🇳</p>
+            <p><span class="t-prompt">$</span> <span class="t-cmd">cat status.txt</span></p>
+            <p class="t-out accent-text">Open to opportunities ✓</p>
+            <p class="t-blink">▮</p>
+          </div>
+        </div>
+      </div>
+    </div>
   </section>
 
   <!-- SKILLS -->
-  <section class="card-section reveal" id="skills">
-    <h2>Skills</h2>
-    <div class="skills-grid">
-
-      <div class="skill-card">
-        <h3>Programming</h3>
-        <div class="tags">
-          <span class="tag">HTML</span>
-          <span class="tag">CSS</span>
-          <span class="tag">Basic Java</span>
-          <span class="tag">Python</span>
-        </div>
+  <section class="section reveal" id="skills">
+    <div class="section-inner">
+      <div class="section-header">
+        <span class="section-tag">// 02</span>
+        <h2>Skills</h2>
       </div>
+      <div class="skills-grid">
 
-      <div class="skill-card">
-        <h3>Cybersecurity</h3>
-        <div class="tags">
-          <span class="tag">Web Application Pentesting</span>
-          <span class="tag">OWASP Top 30</span>
-          <span class="tag">Threat Awareness</span>
-          <span class="tag">Incident Basics</span>
+        <div class="skill-card">
+          <div class="skill-icon">&#60;/&#62;</div>
+          <h3>Programming</h3>
+          <div class="skill-bars">
+            <div class="skill-bar-item">
+              <span>Python</span>
+              <div class="bar"><div class="bar-fill" style="width:65%"></div></div>
+            </div>
+            <div class="skill-bar-item">
+              <span>HTML / CSS</span>
+              <div class="bar"><div class="bar-fill" style="width:75%"></div></div>
+            </div>
+            <div class="skill-bar-item">
+              <span>Java (Basic)</span>
+              <div class="bar"><div class="bar-fill" style="width:35%"></div></div>
+            </div>
+          </div>
         </div>
-      </div>
 
-      <div class="skill-card">
-        <h3>Tools & Systems</h3>
-        <div class="tags">
-          <span class="tag">Linux</span>
-          <span class="tag">Git</span>
-          <span class="tag">VS Code</span>
-           <span class="tag">Kali Linux</span>
+        <div class="skill-card">
+          <div class="skill-icon">🛡</div>
+          <h3>Cybersecurity</h3>
+          <div class="tags">
+            <span class="tag">Web App Pentesting</span>
+            <span class="tag">OWASP Top 10</span>
+            <span class="tag">Threat Awareness</span>
+            <span class="tag">Incident Basics</span>
+            <span class="tag">Log Analysis</span>
+          </div>
         </div>
-      </div>
 
+        <div class="skill-card">
+          <div class="skill-icon">⚙</div>
+          <h3>Tools & Systems</h3>
+          <div class="tags">
+            <span class="tag">Kali Linux</span>
+            <span class="tag">Linux CLI</span>
+            <span class="tag">Git</span>
+            <span class="tag">VS Code</span>
+            <span class="tag">Ollama</span>
+          </div>
+        </div>
+
+      </div>
     </div>
   </section>
 
   <!-- PROJECTS -->
-  <section class="card-section reveal" id="projects">
-    <h2>Projects</h2>
-    <div class="projects-grid">
+  <section class="section reveal" id="projects">
+    <div class="section-inner">
+      <div class="section-header">
+        <span class="section-tag">// 03</span>
+        <h2>Projects</h2>
+      </div>
+      <div class="projects-grid">
 
-      <!-- NEW: LogSentinel -->
-      <div class="project-card">
-        <h3>LogSentinel - AI Log Analyzer</h3>
-        <p>
-          Built a local AI-powered log analysis tool using Ollama that detects threats,
-          brute force attacks, path traversal attempts, and suspicious commands from
-          system logs - all running privately on-device with no data leaving the machine.
-        </p>
-        <div class="tags" style="margin-top: 12px;">
-          <span class="tag">Ollama</span>
-          <span class="tag">Local AI</span>
-          <span class="tag">Log Analysis</span>
-          <span class="tag">Threat Detection</span>
+        <div class="project-card featured">
+          <div class="project-top">
+            <span class="project-icon">🔍</span>
+            <span class="project-badge">Featured</span>
+          </div>
+          <h3>LogSentinel — AI Log Analyzer</h3>
+          <p>Local AI-powered log analysis tool using Ollama. Detects threats, brute force attacks, path traversal, and suspicious commands — all running privately on-device.</p>
+          <div class="tags" style="margin-top: 14px;">
+            <span class="tag">Ollama</span>
+            <span class="tag">Local AI</span>
+            <span class="tag">Log Analysis</span>
+            <span class="tag">Threat Detection</span>
+          </div>
+          <a href="log-analyzer.html" class="btn btn-outline" style="margin-top: 18px; display: inline-block;">View Tool →</a>
         </div>
-        <a href="log-analyzer.html" class="btn btn-outline" style="margin-top: 14px; display: inline-block; font-size: 0.85rem;">
-          View Tool →
-        </a>
-      </div>
 
-      <div class="project-card">
-        <h3>Projec 2</h3>
-        <p>
-          In Progress ...
-        </p>
-      </div>
+        <div class="project-card wip">
+          <div class="project-top">
+            <span class="project-icon">⚡</span>
+            <span class="project-badge wip-badge">In Progress</span>
+          </div>
+          <h3>Project 2</h3>
+          <p>Currently in development. Stay tuned!</p>
+        </div>
 
-      <div class="project-card">
-        <h3>Project 3</h3>
-        <p>
-         In Progress ...
-        </p>
-      </div>
+        <div class="project-card wip">
+          <div class="project-top">
+            <span class="project-icon">🔐</span>
+            <span class="project-badge wip-badge">In Progress</span>
+          </div>
+          <h3>Project 3</h3>
+          <p>Currently in development. Stay tuned!</p>
+        </div>
 
-      <div class="project-card">
-        <h3>Project 4</h3>
-        <p>
-         In Progress ...
-        </p>
-      </div>
+        <div class="project-card wip">
+          <div class="project-top">
+            <span class="project-icon">📡</span>
+            <span class="project-badge wip-badge">In Progress</span>
+          </div>
+          <h3>Project 4</h3>
+          <p>Currently in development. Stay tuned!</p>
+        </div>
 
+      </div>
     </div>
   </section>
 
   <!-- LEARNING -->
-  <section class="card-section reveal" id="learning">
-    <h2>Learning & Certifications</h2>
-    <div class="learning-list">
-
-      <div class="learning-item">
-        <span>Google Cybersecurity Professional Certificate</span>
-        <span class="badge">Completed!</span>
+  <section class="section reveal" id="learning">
+    <div class="section-inner">
+      <div class="section-header">
+        <span class="section-tag">// 04</span>
+        <h2>Learning & Certifications</h2>
       </div>
+      <div class="timeline">
 
-      <div class="learning-item">
-        <span>CompTIA Security+</span>
-        <span class="badge">In Progress</span>
+        <div class="timeline-item done">
+          <div class="timeline-dot"></div>
+          <div class="timeline-content">
+            <h3>Google Cybersecurity Professional Certificate</h3>
+            <p>Covered network security, threat detection, Linux, Python, SIEM tools, and more.</p>
+            <span class="badge badge-done">Completed</span>
+          </div>
+        </div>
+
+        <div class="timeline-item active-item">
+          <div class="timeline-dot"></div>
+          <div class="timeline-content">
+            <h3>CompTIA Security+</h3>
+            <p>Currently studying. Focused on threats, vulnerabilities, and security architecture.</p>
+            <span class="badge badge-progress">In Progress</span>
+          </div>
+        </div>
+
+        <div class="timeline-item upcoming">
+          <div class="timeline-dot"></div>
+          <div class="timeline-content">
+            <h3>TryHackMe — SOC Level 1</h3>
+            <p>Actively completing rooms on threat intel, network traffic analysis, and SIEM.</p>
+            <span class="badge badge-active">Active</span>
+          </div>
+        </div>
+
       </div>
-
     </div>
   </section>
 
   <!-- CONTACT -->
-  <section class="card-section reveal contact" id="contact">
-    <h2>Contact</h2>
-    <p>Email: <a href="mailto:aswinta0a@gmail.com">aswinta0a@gmail.com</a></p>
-    <p>LinkedIn: <a href="https://www.linkedin.com/in/aswinta44" target="_blank">
-      linkedin.com/in/aswinta44
-    </a></p>
+  <section class="section reveal" id="contact">
+    <div class="section-inner">
+      <div class="section-header">
+        <span class="section-tag">// 05</span>
+        <h2>Contact</h2>
+      </div>
+      <p class="contact-intro">I'm actively looking for entry-level cybersecurity roles. Feel free to reach out!</p>
+      <div class="contact-cards">
+        <a href="mailto:aswinta0a@gmail.com" class="contact-card">
+          <span class="contact-icon">✉</span>
+          <div>
+            <span class="contact-label">Email</span>
+            <span class="contact-value">aswinta0a@gmail.com</span>
+          </div>
+        </a>
+        <a href="https://www.linkedin.com/in/aswinta44" target="_blank" class="contact-card">
+          <span class="contact-icon">in</span>
+          <div>
+            <span class="contact-label">LinkedIn</span>
+            <span class="contact-value">linkedin.com/in/aswinta44</span>
+          </div>
+        </a>
+      </div>
+    </div>
   </section>
 
   <!-- FOOTER -->
   <footer>
-    © 2026 Aswin. All rights reserved.
+    <span class="footer-mono">aswin@sec:~$</span> © 2026 Aswin T A. All rights reserved.
   </footer>
 
-  <!-- JS (IMPORTANT: keep this at the bottom) -->
   <script src="script.js"></script>
 </body>
 </html>
