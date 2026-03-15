@@ -4,22 +4,26 @@ const nav = document.getElementById("nav-menu");
 
 toggle.addEventListener("click", () => {
   nav.classList.toggle("active");
+  toggle.classList.toggle("open");
+});
+
+// Navbar scroll effect
+const navbar = document.getElementById("navbar");
+window.addEventListener("scroll", () => {
+  navbar.classList.toggle("scrolled", window.scrollY > 40);
 });
 
 // Active nav link on scroll
-const sections = document.querySelectorAll("section");
-const navLinks = document.querySelectorAll("nav a");
+const sections = document.querySelectorAll("section[id]");
+const navLinks = document.querySelectorAll("nav a[data-label]");
 
 window.addEventListener("scroll", () => {
   let current = "";
-
   sections.forEach(section => {
-    const sectionTop = section.offsetTop - 150;
-    if (scrollY >= sectionTop) {
+    if (window.scrollY >= section.offsetTop - 160) {
       current = section.getAttribute("id");
     }
   });
-
   navLinks.forEach(link => {
     link.classList.remove("active");
     if (link.getAttribute("href") === `#${current}`) {
@@ -30,12 +34,50 @@ window.addEventListener("scroll", () => {
 
 // Scroll reveal animation
 const reveals = document.querySelectorAll(".reveal");
-
-window.addEventListener("scroll", () => {
-  reveals.forEach(el => {
-    const top = el.getBoundingClientRect().top;
-    if (top < window.innerHeight - 100) {
-      el.classList.add("active");
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add("active");
     }
   });
-});
+}, { threshold: 0.1 });
+
+reveals.forEach(el => observer.observe(el));
+
+// Typewriter effect
+const phrases = [
+  "Ethical Hacker",
+  "Web App Pentester",
+  "Threat Hunter",
+  "Security Enthusiast",
+  "CTF Player",
+];
+
+let phraseIndex = 0;
+let charIndex = 0;
+let deleting = false;
+const typeEl = document.getElementById("typewriter");
+
+function type() {
+  const current = phrases[phraseIndex];
+  if (deleting) {
+    typeEl.textContent = current.substring(0, charIndex--);
+    if (charIndex < 0) {
+      deleting = false;
+      phraseIndex = (phraseIndex + 1) % phrases.length;
+      setTimeout(type, 400);
+      return;
+    }
+    setTimeout(type, 60);
+  } else {
+    typeEl.textContent = current.substring(0, charIndex++);
+    if (charIndex > current.length) {
+      deleting = true;
+      setTimeout(type, 1800);
+      return;
+    }
+    setTimeout(type, 90);
+  }
+}
+
+type();
