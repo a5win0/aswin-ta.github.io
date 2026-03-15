@@ -9,6 +9,21 @@ if (emailCard && emailDisplay) {
   emailDisplay.textContent = addr;
 }
 
+// Animate skill bars when skills section comes into view
+const skillsSection = document.getElementById("skills");
+const barObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      document.querySelectorAll(".bar-fill").forEach(bar => {
+        bar.classList.add("animate");
+      });
+      barObserver.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.2 });
+
+if (skillsSection) barObserver.observe(skillsSection);
+
 // Hamburger menu toggle
 const toggle = document.getElementById("menu-toggle");
 const nav = document.getElementById("nav-menu");
