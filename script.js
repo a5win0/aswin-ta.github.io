@@ -43,16 +43,19 @@ window.addEventListener("scroll", () => {
   });
 });
 
-// Scroll reveal — triggers elements already in view on load too
+// Scroll reveal — add hidden via JS so content shows even if observer fails
 const reveals = document.querySelectorAll(".reveal");
+reveals.forEach(el => el.classList.add("hidden"));
+
 const observer = new IntersectionObserver((entries) => {
   entries.forEach(entry => {
     if (entry.isIntersecting) {
+      entry.target.classList.remove("hidden");
       entry.target.classList.add("active");
       observer.unobserve(entry.target);
     }
   });
-}, { threshold: 0.08, rootMargin: "0px 0px -40px 0px" });
+}, { threshold: 0.05, rootMargin: "0px 0px -20px 0px" });
 
 reveals.forEach(el => observer.observe(el));
 
