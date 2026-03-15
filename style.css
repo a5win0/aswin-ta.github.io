@@ -526,10 +526,10 @@ h2 {
   border-radius: 2px;
   transform: scaleX(0);
   transform-origin: left;
-  transition: transform 1s ease 0.3s;
+  transition: transform 1s ease 0.2s;
 }
 
-.reveal.active .bar-fill {
+.bar-fill.animate {
   transform: scaleX(1);
 }
 
