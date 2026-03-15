@@ -32,17 +32,24 @@ window.addEventListener("scroll", () => {
   });
 });
 
-// Scroll reveal animation
+// Scroll reveal — triggers elements already in view on load too
 const reveals = document.querySelectorAll(".reveal");
 const observer = new IntersectionObserver((entries) => {
   entries.forEach(entry => {
     if (entry.isIntersecting) {
       entry.target.classList.add("active");
+      observer.unobserve(entry.target);
     }
   });
-}, { threshold: 0.1 });
+}, { threshold: 0.08, rootMargin: "0px 0px -40px 0px" });
 
 reveals.forEach(el => observer.observe(el));
+
+// Hero fade-in on load
+window.addEventListener("load", () => {
+  document.querySelector(".hero-content").style.opacity = "1";
+  document.querySelector(".hero-content").style.transform = "translateY(0)";
+});
 
 // Typewriter effect
 const phrases = [
@@ -59,6 +66,7 @@ let deleting = false;
 const typeEl = document.getElementById("typewriter");
 
 function type() {
+  if (!typeEl) return;
   const current = phrases[phraseIndex];
   if (deleting) {
     typeEl.textContent = current.substring(0, charIndex--);
