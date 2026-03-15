@@ -1,3 +1,14 @@
+// Build email link at runtime to bypass Cloudflare obfuscation
+const u = "aswinta0a";
+const d = "gmail.com";
+const emailCard = document.getElementById("email-card");
+const emailDisplay = document.getElementById("email-display");
+if (emailCard && emailDisplay) {
+  const addr = u + "@" + d;
+  emailCard.href = "mailto:" + addr;
+  emailDisplay.textContent = addr;
+}
+
 // Hamburger menu toggle
 const toggle = document.getElementById("menu-toggle");
 const nav = document.getElementById("nav-menu");
