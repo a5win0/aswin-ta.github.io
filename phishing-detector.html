@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PhishGuard — AI Phishing Detector</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700;0,9..144,900;1,9..144,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f7f4ef;
+    --surface: #ffffff;
+    --border: #e2ddd6;
+    --text: #1a1410;
+    --muted: #8a8278;
+    --danger: #c0392b;
+    --danger-light: #fdf0ef;
+    --danger-border: #f0c0bc;
+    --warning: #d35400;
+    --warning-light: #fef5ec;
+    --warning-border: #f5cba7;
+    --safe: #1a6b3c;
+    --safe-light: #eef7f2;
+    --safe-border: #b8dfc8;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: var(--bg); color: var(--text); font-family: 'DM Mono', monospace; min-height: 100vh; }
+  header { background: var(--text); color: var(--bg); padding: 18px 40px; display: flex; align-items: center; justify-content: space-between; }
+  .logo { font-family: 'Fraunces', serif; font-size: 1.5rem; font-weight: 900; letter-spacing: -0.5px; display: flex; align-items: center; gap: 10px; }
+  .logo-shield { width: 32px; height: 32px; background: var(--danger); display: flex; align-items: center; justify-content: center; font-size: 16px; border-radius: 2px; }
+  .header-right { font-size: 0.7rem; color: #888; display: flex; align-items: center; gap: 6px; }
+  .dot { width: 6px; height: 6px; background: #4caf50; border-radius: 50%; animation: blink 2s infinite; }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+  .main { max-width: 900px; margin: 0 auto; padding: 48px 24px; }
+  .hero { text-align: center; margin-bottom: 48px; }
+  .hero h1 { font-family: 'Fraunces', serif; font-size: 3rem; font-weight: 900; line-height: 1.1; margin-bottom: 12px; letter-spacing: -1px; }
+  .hero h1 span { color: var(--danger); font-style: italic; }
+  .hero p { color: var(--muted); font-size: 0.85rem; line-height: 1.7; }
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 4px; margin-bottom: 24px; overflow: hidden; }
+  .card-header { padding: 14px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; background: #faf9f7; flex-wrap: wrap; gap: 8px; }
+  .card-title { font-size: 0.7rem; font-weight: 500; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); }
+  .field { padding: 16px 20px; border-bottom: 1px solid var(--border); }
+  .field label { display: block; font-size: 0.7rem; letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+  .field input, .field textarea { width: 100%; background: transparent; border: none; font-family: 'DM Mono', monospace; font-size: 0.875rem; color: var(--text); outline: none; resize: none; line-height: 1.6; }
+  .field textarea { height: 180px; }
+  .field input::placeholder, .field textarea::placeholder { color: #bbb; }
+  .controls { padding: 14px 20px; display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+  .btn { font-family: 'DM Mono', monospace; font-size: 0.75rem; font-weight: 500; padding: 10px 24px; border: 1px solid; cursor: pointer; border-radius: 2px; transition: all 0.15s; letter-spacing: 1px; text-transform: uppercase; }
+  .btn-danger { background: var(--danger); border-color: var(--danger); color: white; }
+  .btn-danger:hover { background: #a93226; border-color: #a93226; }
+  .btn-danger:disabled { opacity: 0.5; cursor: not-allowed; }
+  .btn-ghost { background: transparent; border-color: var(--border); color: var(--muted); }
+  .btn-ghost:hover { border-color: var(--muted); color: var(--text); }
+  .model-select { font-family: 'DM Mono', monospace; font-size: 0.75rem; background: #faf9f7; border: 1px solid var(--border); color: var(--text); padding: 9px 12px; border-radius: 2px; cursor: pointer; outline: none; margin-left: auto; }
+  .sample-btn { font-family: 'DM Mono', monospace; font-size: 0.65rem; color: var(--danger); background: none; border: none; cursor: pointer; text-decoration: underline; letter-spacing: 1px; text-transform: uppercase; }
+  .result-card { display: none; background: var(--surface); border: 2px solid var(--border); border-radius: 4px; overflow: hidden; animation: fadeIn 0.4s ease; }
+  @keyframes fadeIn { from { opacity:0; transform: translateY(8px); } to { opacity:1; transform: translateY(0); } }
+  .result-card.danger { border-color: var(--danger); }
+  .result-card.warning { border-color: var(--warning); }
+  .result-card.safe { border-color: var(--safe); }
+  .verdict-banner { padding: 24px 28px; display: flex; align-items: center; gap: 20px; }
+  .verdict-banner.danger { background: var(--danger-light); }
+  .verdict-banner.warning { background: var(--warning-light); }
+  .verdict-banner.safe { background: var(--safe-light); }
+  .verdict-icon { font-size: 2.5rem; line-height: 1; }
+  .verdict-text h2 { font-family: 'Fraunces', serif; font-size: 1.6rem; font-weight: 900; line-height: 1.1; margin-bottom: 4px; }
+  .verdict-text h2.danger { color: var(--danger); }
+  .verdict-text h2.warning { color: var(--warning); }
+  .verdict-text h2.safe { color: var(--safe); }
+  .verdict-text p { font-size: 0.8rem; color: var(--muted); }
+  .score-section { padding: 20px 28px; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+  .score-label { display: flex; justify-content: space-between; font-size: 0.7rem; letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; }
+  .score-track { height: 8px; background: #eee; border-radius: 4px; overflow: hidden; }
+  .score-fill { height: 100%; border-radius: 4px; transition: width 1s ease; width: 0%; }
+  .score-fill.danger { background: var(--danger); }
+  .score-fill.warning { background: var(--warning); }
+  .score-fill.safe { background: var(--safe); }
+  .indicators { padding: 20px 28px; border-bottom: 1px solid var(--border); }
+  .indicators-title { font-size: 0.7rem; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin-bottom: 14px; }
+  .indicator-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 8px; }
+  .indicator-item { display: flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 2px; font-size: 0.75rem; border: 1px solid; }
+  .indicator-item.found { background: var(--danger-light); border-color: var(--danger-border); color: var(--danger); }
+  .indicator-item.clean { background: var(--safe-light); border-color: var(--safe-border); color: var(--safe); }
+  .ai-analysis { padding: 20px 28px; }
+  .ai-title { font-size: 0.7rem; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+  .ai-badge { background: var(--text); color: var(--bg); font-size: 0.6rem; padding: 2px 6px; border-radius: 2px; }
+  .ai-content { font-size: 0.85rem; line-height: 1.8; color: var(--text); min-height: 60px; }
+  .ai-content.loading { display: flex; align-items: center; gap: 10px; color: var(--muted); font-size: 0.8rem; }
+  .spinner { width: 14px; height: 14px; border: 2px solid var(--border); border-top-color: var(--danger); border-radius: 50%; animation: spin 0.8s linear infinite; flex-shrink: 0; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .cursor { display: inline-block; width: 2px; height: 14px; background: var(--text); animation: blink 0.7s infinite; vertical-align: middle; margin-left: 1px; }
+  .error-box { background: var(--danger-light); border: 1px solid var(--danger-border); border-radius: 2px; padding: 14px 18px; font-size: 0.8rem; color: var(--danger); line-height: 1.7; }
+  .tips { margin-top: 40px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .tip-card { background: var(--surface); border: 1px solid var(--border); border-radius: 4px; padding: 20px; }
+  .tip-icon { font-size: 1.4rem; margin-bottom: 8px; }
+  .tip-title { font-family: 'Fraunces', serif; font-size: 0.95rem; font-weight: 700; margin-bottom: 6px; }
+  .tip-desc { font-size: 0.75rem; color: var(--muted); line-height: 1.6; }
+  footer { text-align: center; padding: 32px; font-size: 0.7rem; color: var(--muted); border-top: 1px solid var(--border); margin-top: 48px; }
+  @media (max-width: 600px) { .hero h1 { font-size: 2rem; } .tips { grid-template-columns: 1fr; } .indicator-grid { grid-template-columns: 1fr 1fr; } }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <div class="logo-shield">🛡</div>
+    PhishGuard
+  </div>
+  <div class="header-right">
+    <span class="dot"></span>
+    Ollama Local · Privacy First
+  </div>
+</header>
+
+<div class="main">
+
+  <div class="hero">
+    <h1>Is this email a <span>phishing</span> attempt?</h1>
+    <p>Paste any suspicious email below. AI analyzes it locally — nothing leaves your machine.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">Email Content</span>
+      <div style="display:flex;gap:12px;">
+        <button class="sample-btn" onclick="loadSample('phish')">⚠ load phishing sample</button>
+        <button class="sample-btn" onclick="loadSample('legit')" style="color:var(--safe)">✓ load legit sample</button>
+      </div>
+    </div>
+    <div class="field">
+      <label>From / Sender</label>
+      <input type="text" id="emailFrom" placeholder="e.g. support@paypa1-secure.com">
+    </div>
+    <div class="field">
+      <label>Subject</label>
+      <input type="text" id="emailSubject" placeholder="e.g. URGENT: Your account has been suspended">
+    </div>
+    <div class="field">
+      <label>Email Body</label>
+      <textarea id="emailBody" placeholder="Paste the full email body here..."></textarea>
+    </div>
+    <div class="controls">
+      <select class="model-select" id="modelSelect">
+        <option value="llama3.2">llama3.2</option>
+        <option value="llama3.2:3b">llama3.2:3b</option>
+        <option value="mistral">mistral</option>
+        <option value="phi4-mini">phi4-mini</option>
+        <option value="gemma3:4b">gemma3:4b</option>
+      </select>
+      <button class="btn btn-danger" id="analyzeBtn" onclick="analyzeEmail()">▶ Analyze Email</button>
+      <button class="btn btn-ghost" onclick="clearAll()">Clear</button>
+    </div>
+  </div>
+
+  <div class="result-card" id="resultCard">
+    <div class="verdict-banner" id="verdictBanner">
+      <div class="verdict-icon" id="verdictIcon"></div>
+      <div class="verdict-text">
+        <h2 id="verdictTitle"></h2>
+        <p id="verdictSubtitle"></p>
+      </div>
+    </div>
+    <div class="score-section">
+      <div class="score-label">
+        <span>Phishing Risk Score</span>
+        <span id="scoreValue">0%</span>
+      </div>
+      <div class="score-track">
+        <div class="score-fill" id="scoreFill"></div>
+      </div>
+    </div>
+    <div class="indicators">
+      <div class="indicators-title">Threat Indicators Checked</div>
+      <div class="indicator-grid" id="indicatorGrid"></div>
+    </div>
+    <div class="ai-analysis">
+      <div class="ai-title">
+        AI Analysis
+        <span class="ai-badge">OLLAMA</span>
+      </div>
+      <div class="ai-content" id="aiContent"></div>
+    </div>
+  </div>
+
+  <div class="tips">
+    <div class="tip-card">
+      <div class="tip-icon">🎣</div>
+      <div class="tip-title">Urgency Tactics</div>
+      <div class="tip-desc">Phishing emails create panic — "Your account will be deleted in 24 hours!" Legitimate companies don't pressure you like this.</div>
+    </div>
+    <div class="tip-card">
+      <div class="tip-icon">🔗</div>
+      <div class="tip-title">Fake Domains</div>
+      <div class="tip-desc">Attackers use lookalike domains: paypa1.com, arnazon.com, micros0ft.com. Always check the actual sender domain carefully.</div>
+    </div>
+    <div class="tip-card">
+      <div class="tip-icon">🔑</div>
+      <div class="tip-title">Credential Harvesting</div>
+      <div class="tip-desc">No legitimate service will ask for your password, OTP, or full card details over email. Ever. This is always a red flag.</div>
+    </div>
+  </div>
+
+</div>
+
+<footer>PhishGuard · Runs locally via Ollama · No data leaves your machine · Built by Aswin T A</footer>
+
+<script>
+const PHISH_SAMPLE = {
+  from: 'security-alert@paypa1-secure-login.com',
+  subject: 'URGENT: Your PayPal account has been LIMITED - Action Required Within 24 Hours',
+  body: `Dear Valued Customer,
+
+We have detected unusual activity on your PayPal account. Your account has been temporarily LIMITED due to suspicious transactions from an unrecognized device.
+
+To restore full access, you must verify your identity IMMEDIATELY by clicking the link below:
+
+https://paypal-secure-verify.xyz/confirm-identity?token=a8f3k2
+
+You must complete this within 24 HOURS or your account will be permanently suspended and all funds frozen.
+
+Information required:
+- Full name and date of birth
+- Credit/Debit card number, CVV and expiry date
+- PayPal password
+
+This is an automated security alert. Do not ignore this message.
+
+PayPal Security Team`
+};
+
+const LEGIT_SAMPLE = {
+  from: 'no-reply@github.com',
+  subject: 'Your GitHub account: new sign-in from Chrome on Windows',
+  body: `Hi aswin,
+
+We noticed a new sign-in to your GitHub account.
+
+Device: Chrome on Windows
+Location: Kerala, India
+Time: March 8, 2026 at 11:30 AM IST
+
+If this was you, you can ignore this email.
+
+If you don't recognize this sign-in, please secure your account:
+https://github.com/settings/security
+
+Thanks,
+The GitHub Team`
+};
+
+function loadSample(type) {
+  const s = type === 'phish' ? PHISH_SAMPLE : LEGIT_SAMPLE;
+  document.getElementById('emailFrom').value = s.from;
+  document.getElementById('emailSubject').value = s.subject;
+  document.getElementById('emailBody').value = s.body;
+}
+
+function clearAll() {
+  ['emailFrom','emailSubject','emailBody'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('resultCard').style.display = 'none';
+}
+
+function runHeuristics(from, subject, body) {
+  const full = (from + ' ' + subject + ' ' + body).toLowerCase();
+  const checks = [
+    { label: 'Urgency language',     test: () => /urgent|immediately|within \d+ hour|action required|suspended|limited|expire/i.test(full) },
+    { label: 'Suspicious domain',    test: () => /[a-z0-9][\w-]*\d[\w-]*\.(xyz|tk|ml|ga|click|top)|secure.*login|verify.*account/i.test(from) },
+    { label: 'Asks for credentials', test: () => /password|credit.?card|cvv|card number|social security|otp|pin/i.test(full) },
+    { label: 'Suspicious URL',       test: () => /https?:\/\/[^\s]*\.(xyz|tk|ml|ga|click|link|top)/i.test(full) },
+    { label: 'Brand impersonation',  test: () => /paypal|amazon|apple|microsoft|google|bank|irs|netflix/i.test(full) },
+    { label: 'Misspelled brand',     test: () => /paypa[l1]|arnazon|micros[o0]ft|app[l1]e|g[o0]{2}gle/i.test(full) },
+    { label: 'Threat language',      test: () => /permanently (suspended|deleted|banned)|frozen|legal action/i.test(full) },
+    { label: 'Generic greeting',     test: () => /dear (valued |customer|user|member|account holder)/i.test(full) },
+  ];
+  const results = checks.map(c => ({ label: c.label, found: c.test() }));
+  const score = Math.round((results.filter(r => r.found).length / results.length) * 100);
+  return { results, score };
+}
+
+function getVerdict(score) {
+  if (score >= 50) return { level: 'danger',  icon: '⚠️', title: 'Likely Phishing',   subtitle: 'Multiple threat indicators detected. Do not click any links or provide information.' };
+  if (score >= 25) return { level: 'warning', icon: '🔍', title: 'Suspicious Email',   subtitle: 'Some warning signs present. Verify the sender independently before taking any action.' };
+  return               { level: 'safe',    icon: '✅', title: 'Looks Legitimate',   subtitle: 'No major phishing indicators detected. Always stay cautious with unexpected emails.' };
+}
+
+async function analyzeEmail() {
+  const from    = document.getElementById('emailFrom').value.trim();
+  const subject = document.getElementById('emailSubject').value.trim();
+  const body    = document.getElementById('emailBody').value.trim();
+  const model   = document.getElementById('modelSelect').value;
+
+  if (!body && !subject) { alert('Please paste an email subject or body first.'); return; }
+
+  const btn = document.getElementById('analyzeBtn');
+  btn.disabled = true;
+
+  const { results, score } = runHeuristics(from, subject, body);
+  const verdict = getVerdict(score);
+
+  const card = document.getElementById('resultCard');
+  card.style.display = 'block';
+  card.className = 'result-card ' + verdict.level;
+
+  document.getElementById('verdictBanner').className = 'verdict-banner ' + verdict.level;
+  document.getElementById('verdictIcon').textContent = verdict.icon;
+  const vt = document.getElementById('verdictTitle');
+  vt.textContent = verdict.title;
+  vt.className = verdict.level;
+  document.getElementById('verdictSubtitle').textContent = verdict.subtitle;
+  document.getElementById('scoreValue').textContent = score + '%';
+
+  const fill = document.getElementById('scoreFill');
+  fill.className = 'score-fill ' + verdict.level;
+  fill.style.width = '0%';
+  setTimeout(() => fill.style.width = score + '%', 100);
+
+  document.getElementById('indicatorGrid').innerHTML = results.map(r => `
+    <div class="indicator-item ${r.found ? 'found' : 'clean'}">
+      <span>${r.found ? '✗' : '✓'}</span><span>${r.label}</span>
+    </div>`).join('');
+
+  card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+  const aiContent = document.getElementById('aiContent');
+  aiContent.className = 'ai-content loading';
+  aiContent.innerHTML = `<div class="spinner"></div> Analyzing with ${model}...`;
+
+  const prompt = `You are a cybersecurity expert specializing in phishing detection. Analyze this email:
+
+FROM: ${from || 'Not provided'}
+SUBJECT: ${subject || 'Not provided'}
+BODY:
+${body.slice(0, 2000)}
+
+Provide a concise analysis with these sections:
+1. VERDICT: Phishing / Suspicious / Legitimate (one sentence)
+2. RED FLAGS: Specific phishing tactics used (bullet points, or "None detected")
+3. EXPLANATION: Why this is dangerous or safe (2-3 sentences)
+4. ADVICE: What should the recipient do right now?
+
+Be direct and practical.`;
+
+  try {
+    const response = await fetch('http://localhost:11434/api/generate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain' },
+      body: JSON.stringify({ model, prompt, stream: false })
+    });
+
+    if (!response.ok) throw new Error(`Ollama returned ${response.status}`);
+
+    const data = await response.json();
+    const text = data.response || '';
+    aiContent.className = 'ai-content';
+    aiContent.innerHTML = '';
+
+    let i = 0;
+    function type() {
+      if (i < text.length) {
+        aiContent.innerHTML = formatText(text.slice(0, i + 5)) + '<span class="cursor"></span>';
+        i += 5;
+        setTimeout(type, 10);
+      } else {
+        aiContent.innerHTML = formatText(text);
+      }
+    }
+    type();
+
+  } catch (err) {
+    aiContent.className = 'ai-content';
+    const isConn = err.message.includes('fetch') || err.message.includes('Failed') || err.message.includes('403');
+    aiContent.innerHTML = `<div class="error-box">⚠ Could not connect to Ollama — ${err.message}${isConn ? '<br><br>In PowerShell run:<br><code>$env:OLLAMA_ORIGINS="*"</code><br><code>ollama serve</code>' : ''}</div>`;
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+function formatText(text) {
+  return text
+    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+    .replace(/^#{1,3}\s+(.+)$/gm, '<strong>$1</strong>')
+    .replace(/\n{2,}/g, '<br><br>')
+    .replace(/\n/g, '<br>');
+}
+</script>
+</body>
+</html>
